@@ -14,7 +14,10 @@ class BaseApplication(object):
     handlers = {}
 
     # http response headers
-    headers = "HTTP/1.1 %s %s\r\nDate: %s\r\nContent-Type: text/html;charset=UTF-8\r\n"
+    headers = "HTTP/1.1 %s %s\r\n" \
+              "Date: %s\r\n" \
+              "Content-Type: text/html;charset=UTF-8\r\n" \
+              "Cookie: server=run;\r\n\r\n"
 
     # init method
     def __init__(self):
@@ -58,11 +61,7 @@ class BaseApplication(object):
         request_method = buffer_data_convert[0].split(" ")[0]
         request_url = buffer_data_convert[0].split(" ")[1]
         url_list = self.handlers.keys()
+        # is url valid
         if request_url not in url_list:
             pass
-        print "-----------------------------------------"
-        print len(buffer_data_convert)
-        print buffer_data
-        print "-----------------------------------------"
-        print self.handlers
         return "HTTP/1.1 200 OK\r\nDate: Sat, 31 Dec 2005 23:59:59 GMT\r\nContent-Type: text/html;charset=UTF-8\r\nContent-Length: 800\r\nConnection: keep-alive\n\r\n\r<html><head><title>Wrox Homepage</title></head><body>hello world!%s</body></html>" % self.handlers[request_url]

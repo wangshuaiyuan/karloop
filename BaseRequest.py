@@ -63,7 +63,7 @@ class BaseRequest(object):
                     value = ""
                 data["parameter"][key] = value
         if "cookie" in self.convert_data_list.keys():
-            cookie_list = self.convert_data_list["cookie"].split(";")
+            cookie_list = self.convert_data_list["cookie"].split("; ")
             for cookie in cookie_list:
                 for i in range(len(cookie)):
                     if cookie[i] == "=":

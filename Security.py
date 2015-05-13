@@ -186,7 +186,7 @@ class DES(object):
 if __name__ == '__main__':  
     d = DES()  
     d.input_key('123456789')  
-    s = '再来一段中文'
+    s = 'param'
     a = d.encode(s)  
     print a
 
