@@ -80,4 +80,4 @@ class BaseResponse(object):
 
     # set head
     def set_head(self, value):
-        self.response_head.replace("text/html;charset=UTF-8", value)
+        self.response_head = self.response_head.replace("text/html;charset=UTF-8", value)

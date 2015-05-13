@@ -7,6 +7,8 @@ import socket
 import struct
 import fcntl
 import time
+import datetime
+from BaseRequest import BaseRequest
 
 
 class BaseApplication(object):
@@ -57,11 +59,26 @@ class BaseApplication(object):
             conn.close()
 
     def parse_data(self, buffer_data):
+        now = datetime.datetime.now()
+        now_time = now.strftime("%a %d %m %Y %H:%M:%S")
         buffer_data_convert = buffer_data.split("\r\n")
-        request_method = buffer_data_convert[0].split(" ")[0]
-        request_url = buffer_data_convert[0].split(" ")[1]
+        request = BaseRequest(buffer_data_convert)
+        method = request.get_request_method()
+        url = request.get_request_url()
         url_list = self.handlers.keys()
-        # is url valid
-        if request_url not in url_list:
-            pass
-        return "HTTP/1.1 200 OK\r\nDate: Sat, 31 Dec 2005 23:59:59 GMT\r\nContent-Type: text/html;charset=UTF-8\r\nContent-Length: 800\r\nConnection: keep-alive\n\r\n\r<html><head><title>Wrox Homepage</title></head><body>hello world!%s</body></html>" % self.handlers[request_url]
+        data = request.get_http_data()
+        if url not in url_list:
+            response = self.headers % (404, '"request url not found"', now_time)
+            return response
+        handler = self.handlers[url]
+        init_handler = handler(data)
+        expression = "init_handler." + method + "()"
+        try:
+            result = eval(expression)
+        except Exception:
+            response = self.headers % (500, '"server error"', now_time)
+            return response
+        if result is None:
+            response = self.headers % (405, '"request method not found"', now_time)
+            return response
+        return result
