@@ -5,6 +5,7 @@ __author__ = 'karl'
 
 import datetime
 from Security import DES
+from Render import Render
 
 
 class BaseResponse(object):
@@ -81,3 +82,7 @@ class BaseResponse(object):
     # set head
     def set_head(self, value):
         self.response_head = self.response_head.replace("text/html;charset=UTF-8", value)
+
+    # render method
+    def render(self, template_path):
+        pass

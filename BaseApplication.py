@@ -40,7 +40,7 @@ class BaseApplication(object):
         if port:
             self.port = port
         self.socket_server.bind((self.ip, self.port))
-        self.socket_server.listen(10)
+        self.socket_server.listen(50)
 
     # run the server
     def run(self):
