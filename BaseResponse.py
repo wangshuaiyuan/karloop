@@ -6,6 +6,7 @@ __author__ = 'karl'
 import datetime
 from Security import DES
 from Render import Render
+from config import base_settings
 
 
 class BaseResponse(object):
@@ -14,20 +15,23 @@ class BaseResponse(object):
         self.des = DES()
         self.des.input_key('123456789')
         self.response_head = "HTTP/1.1 %s %s\r\n" \
+                             "Host: %s\r\n" \
                              "Date: %s\r\n" \
                              "Connection: keep-alive\r\n" \
                              "Content-Type: text/html;charset=UTF-8\r\n" \
-                             "Cookie: server=run; \r\n\r\n"
+                             "Set-Cookie: server=run; path=/\r\n"
         self.data = data
         self.settings = settings
 
     # set cookie to response
-    def set_cookie(self, key, value):
+    def set_cookie(self, key, value, expires_days=1):
         key = str(key)
         value = str(value)
-        cookie_string = '%s="%s"; ' % (key, value)
-        cookie_string_replace = "server=run; " + cookie_string
-        self.response_head = self.response_head.replace("server=run; ", cookie_string_replace)
+        now_time = datetime.datetime.now()
+        expires_days = now_time + datetime.timedelta(days=expires_days)
+        expires_days = expires_days.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        cookie_string = 'Set-Cookie: %s="%s"; expires=%s; Path=/\r\n' % (key, value, expires_days)
+        self.response_head = self.response_head.replace("Set-Cookie: server=run; path=/\r\n", cookie_string)
 
     # get the cookie from request
     def get_cookie(self, key):
@@ -84,8 +88,9 @@ class BaseResponse(object):
         status = 200
         status_m = "OK"
         now = datetime.datetime.now()
-        now_time = now.strftime("%a %d %m %Y %H:%M:%S")
-        response_data = self.response_head % (status, status_m, now_time)
+        now_time = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        response_data = self.response_head % (status, status_m, base_settings["host"], now_time)
+        response_data += "\r\n"
         response_data += body
         return response_data
 

@@ -9,6 +9,7 @@ import fcntl
 import time
 import datetime
 import platform
+from config import base_settings
 from BaseRequest import BaseRequest
 from ParseStatic import ParseStatic
 
@@ -23,9 +24,10 @@ class BaseApplication(object):
     # http response headers
     headers = "HTTP/1.1 %s %s\r\n" \
               "Date: %s\r\n" \
+              "Host: %s\r\n" \
               "Connection: keep-alive\r\n" \
               "Content-Type: text/html;charset=UTF-8\r\n" \
-              "Cookie: server=run;\r\n\r\n"
+              "Set-Cookie: server=run;\r\n\r\n"
 
     # static file name list
     static_file_extension = ["jpeg", "jpg", "gif", "png", "css", "js", "mp3", "ogg", "mp4"]
@@ -38,11 +40,12 @@ class BaseApplication(object):
             self.settings = settings
         self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         platform_system = platform.system()
-        self.port = 8008
+        self.port = base_settings["port"]
         if platform_system.lower() == "windows":
             host_name = socket.gethostname()
             name = socket.getfqdn(host_name)
             self.ip = socket.gethostbyname(name)
+            base_settings["ip"] = self.ip
         elif platform_system.lower() == "linux":
             sock_f = self.socket_server.fileno()
             socket_io_address = 0x8915
@@ -50,15 +53,18 @@ class BaseApplication(object):
             res = fcntl.ioctl(sock_f, socket_io_address, if_req)
             ip = struct.unpack('16sH2x4s8x', res)[2]
             self.ip = socket.inet_ntoa(ip)
+            base_settings["ip"] = self.ip
         else:
             host_name = socket.gethostname()
             self.ip = socket.gethostbyname(host_name)
+            base_settings["ip"] = self.ip
         self.parse_static = ParseStatic(settings=settings)
 
     # listen the port and set max request number
     def listen(self, port=None):
         if port:
             self.port = port
+        base_settings["host"] = str(self.ip) + ":" + str(self.port)
         self.socket_server.bind((self.ip, self.port))
         self.socket_server.listen(50)
 
@@ -80,9 +86,9 @@ class BaseApplication(object):
 
     def parse_data(self, buffer_data):
         now = datetime.datetime.now()
-        now_time = now.strftime("%a %d %m %Y %H:%M:%S")
+        now_time = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
         if not buffer_data:
-            return self.headers % (200, "OK", now_time)
+            return self.headers % (200, "OK", now_time, base_settings["host"])
         buffer_data_convert = buffer_data.split("\r\n")
         request = BaseRequest(buffer_data_convert)
         method = request.get_request_method()
@@ -94,7 +100,7 @@ class BaseApplication(object):
         url_list = self.handlers.keys()
         data = request.get_http_data()
         if url not in url_list:
-            response = self.headers % (404, '"request url not found"', now_time)
+            response = self.headers % (404, '"request url not found"', now_time, base_settings["host"])
             return response
         handler = self.handlers[url]
         init_handler = handler(data, self.settings)
@@ -102,9 +108,9 @@ class BaseApplication(object):
         try:
             result = eval(expression)
         except Exception:
-            response = self.headers % (500, '"server error"', now_time)
+            response = self.headers % (500, '"server error"', now_time, base_settings["host"])
             return response
         if result is None:
-            response = self.headers % (405, '"request method not found"', now_time)
+            response = self.headers % (405, '"request method not allowed"', now_time, base_settings["host"])
             return response
         return result

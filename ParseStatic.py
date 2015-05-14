@@ -4,11 +4,13 @@ __author__ = 'karl'
 
 
 import datetime
+from config import base_settings
 
 
 class ParseStatic(object):
     # define the response head
     header = "HTTP/1.1 %s %s\r\n" \
+             "Host: %s\r\n" \
              "Connection: keep-alive\r\n" \
              "Date: %s\r\n" \
              "Content-Type: %s\r\n\r\n"
@@ -41,8 +43,8 @@ class ParseStatic(object):
         f.close()
         file_extension = file_url.split(".")[-1]
         now = datetime.datetime.now()
-        now_time = now.strftime("%a %d %m %Y %H:%M:%S")
+        now_time = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
         content_type = self.content_type[file_extension] if (file_extension in self.content_type) else ""
-        header = self.header % (200, "OK", now_time, content_type)
+        header = self.header % (200, "OK", base_settings["host"], now_time, content_type)
         header += data
         return header
