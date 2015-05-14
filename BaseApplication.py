@@ -9,11 +9,15 @@ import fcntl
 import time
 import datetime
 from BaseRequest import BaseRequest
+from ParseStatic import ParseStatic
 
 
 class BaseApplication(object):
     # url mapping
     handlers = {}
+
+    # template and static files settings
+    settings = {}
 
     # http response headers
     headers = "HTTP/1.1 %s %s\r\n" \
@@ -21,8 +25,8 @@ class BaseApplication(object):
               "Content-Type: text/html;charset=UTF-8\r\n" \
               "Cookie: server=run;\r\n\r\n"
 
-    # template and static files settings
-    settings = {}
+    # static file name list
+    static_file_extension = ["jpeg", "jpg", "gif", "png", "css", "js", "mp3", "ogg", "mp4"]
 
     # init method
     def __init__(self, handlers=None, settings=None):
@@ -41,6 +45,7 @@ class BaseApplication(object):
         res = fcntl.ioctl(sock_f, socket_io_address, if_req)
         ip = struct.unpack('16sH2x4s8x', res)[2]
         self.ip = socket.inet_ntoa(ip)
+        self.parse_static = ParseStatic(settings=settings)
 
     # listen the port and set max request number
     def listen(self, port=None):
@@ -74,6 +79,10 @@ class BaseApplication(object):
         request = BaseRequest(buffer_data_convert)
         method = request.get_request_method()
         url = request.get_request_url()
+        extension_name = url.split(".")[-1]
+        if extension_name in self.static_file_extension:
+            static_file_data = self.parse_static.parse_static(file_url=url)
+            return static_file_data
         url_list = self.handlers.keys()
         data = request.get_http_data()
         if url not in url_list:

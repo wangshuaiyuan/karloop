@@ -26,8 +26,11 @@ class ParseStatic(object):
     }
 
     # init method
-    def __init__(self, settings):
-        self.settings = settings
+    def __init__(self, settings=None):
+        if settings:
+            self.settings = settings
+        else:
+            self.settings = {}
 
     # read the static files
     def parse_static(self, file_url):
@@ -35,10 +38,10 @@ class ParseStatic(object):
         f = open(file_abstract_path)
         data = f.read()
         f.close()
-        file_extern_name = file_url.split(".")[-1]
+        file_extension = file_url.split(".")[-1]
         now = datetime.datetime.now()
         now_time = now.strftime("%a %d %m %Y %H:%M:%S")
-        content_type = self.content_type[file_extern_name] if (file_extern_name in self.content_type) else ""
+        content_type = self.content_type[file_extension] if (file_extension in self.content_type) else ""
         header = self.header % (200, "OK", now_time, content_type)
         header += data
         return header
