@@ -21,6 +21,9 @@ class BaseApplication(object):
               "Content-Type: text/html;charset=UTF-8\r\n" \
               "Cookie: server=run;\r\n\r\n"
 
+    # template and static files settings
+    settings = {}
+
     # init method
     def __init__(self):
         self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -71,7 +74,7 @@ class BaseApplication(object):
             response = self.headers % (404, '"request url not found"', now_time)
             return response
         handler = self.handlers[url]
-        init_handler = handler(data)
+        init_handler = handler(data, self.settings)
         expression = "init_handler." + method + "()"
         try:
             result = eval(expression)
