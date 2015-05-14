@@ -8,6 +8,7 @@ import struct
 import fcntl
 import time
 import datetime
+import platform
 from BaseRequest import BaseRequest
 from ParseStatic import ParseStatic
 
@@ -35,16 +36,22 @@ class BaseApplication(object):
         if settings:
             self.settings = settings
         self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host_name = socket.gethostname()
-        name = socket.getfqdn(host_name)
-        self.ip = socket.gethostbyname(name)
+        platform_system = platform.system()
         self.port = 8008
-        sock_f = self.socket_server.fileno()
-        socket_io_address = 0x8915
-        if_req = struct.pack('16sH14s', "eth0", socket.AF_INET, '\x00'*14)
-        res = fcntl.ioctl(sock_f, socket_io_address, if_req)
-        ip = struct.unpack('16sH2x4s8x', res)[2]
-        self.ip = socket.inet_ntoa(ip)
+        if platform_system.lower() == "windows":
+            host_name = socket.gethostname()
+            name = socket.getfqdn(host_name)
+            self.ip = socket.gethostbyname(name)
+        elif platform_system.lower() == "linux":
+            sock_f = self.socket_server.fileno()
+            socket_io_address = 0x8915
+            if_req = struct.pack('16sH14s', "eth0", socket.AF_INET, '\x00'*14)
+            res = fcntl.ioctl(sock_f, socket_io_address, if_req)
+            ip = struct.unpack('16sH2x4s8x', res)[2]
+            self.ip = socket.inet_ntoa(ip)
+        else:
+            host_name = socket.gethostname()
+            self.ip = socket.gethostbyname(host_name)
         self.parse_static = ParseStatic(settings=settings)
 
     # listen the port and set max request number
