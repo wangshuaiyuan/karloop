@@ -23,6 +23,7 @@ class BaseApplication(object):
     # http response headers
     headers = "HTTP/1.1 %s %s\r\n" \
               "Date: %s\r\n" \
+              "Connection: keep-alive\r\n" \
               "Content-Type: text/html;charset=UTF-8\r\n" \
               "Cookie: server=run;\r\n\r\n"
 

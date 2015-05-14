@@ -9,6 +9,7 @@ import datetime
 class ParseStatic(object):
     # define the response head
     header = "HTTP/1.1 %s %s\r\n" \
+             "Connection: keep-alive\r\n" \
              "Date: %s\r\n" \
              "Content-Type: %s\r\n\r\n"
 

@@ -15,6 +15,7 @@ class BaseResponse(object):
         self.des.input_key('123456789')
         self.response_head = "HTTP/1.1 %s %s\r\n" \
                              "Date: %s\r\n" \
+                             "Connection: keep-alive\r\n" \
                              "Content-Type: text/html;charset=UTF-8\r\n" \
                              "Cookie: server=run; \r\n\r\n"
         self.data = data
