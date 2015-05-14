@@ -4,7 +4,7 @@ __author__ = 'karl'
 
 
 import datetime
-from config import base_settings
+from base_configure import base_settings
 
 
 class Render(object):

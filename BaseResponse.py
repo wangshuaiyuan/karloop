@@ -6,7 +6,7 @@ __author__ = 'karl'
 import datetime
 from Security import DES
 from Render import Render
-from config import base_settings
+from base_configure import base_settings
 
 
 class BaseResponse(object):

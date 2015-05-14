@@ -9,7 +9,7 @@ import fcntl
 import time
 import datetime
 import platform
-from config import base_settings
+from base_configure import base_settings
 from BaseRequest import BaseRequest
 from ParseStatic import ParseStatic
 
