@@ -85,5 +85,7 @@ class BaseResponse(object):
         self.response_head = self.response_head.replace("text/html;charset=UTF-8", value)
 
     # render method
-    def render(self, template_path):
-        pass
+    def render(self, template_path, parameter_dit=None):
+        abstract_path = self.settings["template"] + template_path if ("template" in self.settings) else template_path
+        r = Render(template=abstract_path)
+        return r.parse_template(parameter_dit)
