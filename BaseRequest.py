@@ -11,11 +11,9 @@ class BaseRequest(object):
         self.convert_data_list["method"] = data_list[0].split(" ")[0].lower()
         self.convert_data_list["url"] = data_list[0].split(" ")[1].split("?")[0]
         self.convert_data_list["http_version"] = data_list[0].split(" ")[2]
-        cookie = ""
-        for l in data_list:
-            if "Cookie" in l:
-                cookie = l
-        self.convert_data_list["cookie"] = cookie.split("Cookie: ")[1]
+        for cookie in data_list:
+            if "Cookie" in cookie:
+                self.convert_data_list["cookie"] = cookie.split("Cookie: ")[1]
 
     # get request method
     def get_request_method(self):
