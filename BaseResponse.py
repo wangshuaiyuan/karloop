@@ -24,13 +24,19 @@ class BaseResponse(object):
     def set_cookie(self, key, value):
         key = str(key)
         value = str(value)
-        cookie_string = '%s="%s";' % (key, value)
+        cookie_string = '%s="%s"; ' % (key, value)
         cookie_string_replace = "server=run; " + cookie_string
-        self.response_head.replace("server=run; ", cookie_string_replace)
+        self.response_head = self.response_head.replace("server=run; ", cookie_string_replace)
 
     # get the cookie from request
     def get_cookie(self, key):
-        return self.data["cookie"][key]
+        if key not in self.data["cookie"]:
+            return ""
+        cookie = self.data["cookie"][key]
+        if cookie.startswith('"') and cookie.endswith('"'):
+            cookie = cookie[1:len(cookie)-1]
+            return cookie
+        return cookie
 
     # set cookie encrypted by DES
     def set_security_cookie(self, key, value):
@@ -44,6 +50,8 @@ class BaseResponse(object):
 
     # get the argument
     def get_argument(self, key):
+        if key not in self.data["parameter"]:
+            return ""
         return self.data["parameter"][key]
 
     # get method

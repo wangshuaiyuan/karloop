@@ -33,6 +33,6 @@ class Render(object):
         value_keys = value_dict.keys()
         for key in value_keys:
             template_data = template_data.replace("{{"+key+"}}", value_dict[key])
-            header = self.header % (200, "OK", now_time)
-            data = header + template_data
-            return data
+        header = self.header % (200, "OK", now_time)
+        data = header + template_data
+        return data

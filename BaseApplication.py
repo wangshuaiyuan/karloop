@@ -25,7 +25,11 @@ class BaseApplication(object):
     settings = {}
 
     # init method
-    def __init__(self):
+    def __init__(self, handlers=None, settings=None):
+        if handlers:
+            self.handlers = handlers
+        if settings:
+            self.settings = settings
         self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         host_name = socket.gethostname()
         name = socket.getfqdn(host_name)
@@ -64,6 +68,8 @@ class BaseApplication(object):
     def parse_data(self, buffer_data):
         now = datetime.datetime.now()
         now_time = now.strftime("%a %d %m %Y %H:%M:%S")
+        if not buffer_data:
+            return self.headers % (200, "OK", now_time)
         buffer_data_convert = buffer_data.split("\r\n")
         request = BaseRequest(buffer_data_convert)
         method = request.get_request_method()
