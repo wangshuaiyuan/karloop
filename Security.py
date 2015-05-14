@@ -164,7 +164,8 @@ class DES(object):
             l = r_t  
         return self.__class__.__IP1(r+l)  
   
-    def encode(self, s):  
+    def encode(self, s):
+        s = str(s)
         a = ''  
         s += ' ' * ((8-len(s) % 8) % 8)
         for i in range(0, len(s), 8):  
@@ -173,8 +174,8 @@ class DES(object):
             a += '%16x' % int(after, 2)  
         return ''.join(w if w != ' ' else '0' for w in a)
   
-    def decode(self, s):  
-        a = ''  
+    def decode(self, s):
+        a = ""
         s.lower()  
         for i in range(0, len(s), 16):  
             before = ''.join(self.__class__.__hex_bin[s[j]] for j in range(i, i+16))  
@@ -186,7 +187,7 @@ class DES(object):
 if __name__ == '__main__':  
     d = DES()  
     d.input_key('123456789')  
-    s = 'param'
+    s = "987654321"
     a = d.encode(s)  
     print a
 

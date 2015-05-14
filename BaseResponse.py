@@ -50,7 +50,7 @@ class BaseResponse(object):
 
     # get cookie encrypted by DES
     def get_security_cookie(self, key):
-        cookie = self.data["cookie"][key]
+        cookie = self.get_cookie(key)
         return self.des.decode(cookie)
 
     # get the argument
