@@ -92,8 +92,8 @@ class BaseApplication(object):
             except socket.timeout:
                 print "time out"
             print "close conn"
-            time.sleep(0.5)
-            conn.close()
+            # time.sleep(0.5)
+            # conn.close()
 
     def parse_data(self, buffer_data):
         now = datetime.datetime.now()
