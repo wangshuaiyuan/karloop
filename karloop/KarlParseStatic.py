@@ -3,15 +3,12 @@
 __author__ = 'karl'
 
 import datetime
-import sys
 from karloop.base_configure import base_settings
 
 
 class ParseStatic(object):
     # define the response head
     header = "HTTP/1.1 %s %s\r\n" \
-             "Accept-Ranges: bytes\r\n" \
-             "Content-Length: %s\r\n" \
              "Host: %s\r\n" \
              "Connection: keep-alive\r\n" \
              "Date: %s\r\n" \
@@ -46,8 +43,7 @@ class ParseStatic(object):
         file_extension = file_url.split(".")[-1]
         now = datetime.datetime.now()
         now_time = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
-        content_length = sys.getsizeof(data, 1024)
         content_type = self.content_type[file_extension] if (file_extension in self.content_type) else ""
-        header = self.header % (200, "OK", content_length, base_settings["host"], now_time, content_type)
+        header = self.header % (200, "OK", base_settings["host"], now_time, content_type)
         header += data
         return header

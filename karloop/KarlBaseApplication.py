@@ -6,6 +6,7 @@ import socket
 import struct
 import fcntl
 import time
+import sys
 import datetime
 import platform
 
@@ -82,20 +83,18 @@ class BaseApplication(object):
         while True:
             conn, address = self.socket_server.accept()
             conn.settimeout(5)
-            while True:
-                try:
-                    buffer_data = conn.recv(4096)
-                    print "--------------------------------------"
-                    print buffer_data
-                    print "--------------------------------------"
-                    response_data = self.parse_data(buffer_data=buffer_data)
-                    conn.send(response_data)
-                except socket.timeout:
-                    print "time out"
-            conn.close()
+            try:
+                buffer_data = conn.recv(4096)
+                response_data = self.parse_data(buffer_data=buffer_data)
+                data_size = sys.getsizeof(response_data)
+                conn.sendall(response_data)
+                lock_time = float(data_size)/(1024*256)
+                print "lock time:", lock_time
+                time.sleep(lock_time)
+            except socket.timeout:
+                print "time out"
             print "close conn"
-            # time.sleep(0.5)
-            # conn.close()
+            conn.close()
 
     def parse_data(self, buffer_data):
         now = datetime.datetime.now()
