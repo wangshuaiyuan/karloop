@@ -38,7 +38,7 @@ class BaseApplication(object):
             self.handlers = handlers
         if settings:
             self.settings = settings
-        self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_SEQPACKET)
         self.port = base_settings["port"]
         if "ip" in settings.keys():
             self.ip = settings["ip"]
