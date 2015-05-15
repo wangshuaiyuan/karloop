@@ -38,7 +38,7 @@ class BaseApplication(object):
             self.handlers = handlers
         if settings:
             self.settings = settings
-        self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_SEQPACKET)
+        self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.port = base_settings["port"]
         if "ip" in settings.keys():
             self.ip = settings["ip"]
@@ -82,15 +82,17 @@ class BaseApplication(object):
         while True:
             conn, address = self.socket_server.accept()
             conn.settimeout(5)
-            try:
-                buffer_data = conn.recv(4096)
-                print "--------------------------------------"
-                print buffer_data
-                print "--------------------------------------"
-                response_data = self.parse_data(buffer_data=buffer_data)
-                conn.send(response_data)
-            except socket.timeout:
-                print "time out"
+            while True:
+                try:
+                    buffer_data = conn.recv(4096)
+                    print "--------------------------------------"
+                    print buffer_data
+                    print "--------------------------------------"
+                    response_data = self.parse_data(buffer_data=buffer_data)
+                    conn.send(response_data)
+                except socket.timeout:
+                    print "time out"
+            conn.close()
             print "close conn"
             # time.sleep(0.5)
             # conn.close()
