@@ -10,8 +10,8 @@ import datetime
 import platform
 
 from base_configure import base_settings
-from BaseRequest import BaseRequest
-from karloop import ParseStatic
+from KarlBaseRequest import BaseRequest
+from karloop import KarlParseStatic
 
 
 class BaseApplication(object):
@@ -58,7 +58,7 @@ class BaseApplication(object):
             host_name = socket.gethostname()
             self.ip = socket.gethostbyname(host_name)
             base_settings["ip"] = self.ip
-        self.parse_static = ParseStatic(settings=settings)
+        self.parse_static = KarlParseStatic(settings=settings)
 
     # listen the port and set max request number
     def listen(self, port=None):
