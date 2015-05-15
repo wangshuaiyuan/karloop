@@ -39,8 +39,17 @@ class BaseApplication(object):
         if settings:
             self.settings = settings
         self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        platform_system = platform.system()
         self.port = base_settings["port"]
+        if "ip" in settings.keys():
+            self.ip = settings["ip"]
+            base_settings["ip"] = self.ip
+        else:
+            self.__set_ip()
+        self.parse_static = ParseStatic(settings=settings)
+
+    # set IP address
+    def __set_ip(self):
+        platform_system = platform.system()
         if platform_system.lower() == "windows":
             host_name = socket.gethostname()
             name = socket.getfqdn(host_name)
@@ -58,7 +67,6 @@ class BaseApplication(object):
             host_name = socket.gethostname()
             self.ip = socket.gethostbyname(host_name)
             base_settings["ip"] = self.ip
-        self.parse_static = ParseStatic(settings=settings)
 
     # listen the port and set max request number
     def listen(self, port=None):
