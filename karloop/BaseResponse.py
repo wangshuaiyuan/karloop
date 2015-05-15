@@ -2,11 +2,11 @@
 
 __author__ = 'karl'
 
-
 import datetime
-from Security import DES
+
+from karloop.Security import DES
 from Render import Render
-from base_configure import base_settings
+from karloop.base_configure import base_settings
 
 
 class BaseResponse(object):

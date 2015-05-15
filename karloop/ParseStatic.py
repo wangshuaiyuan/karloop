@@ -2,9 +2,9 @@
 
 __author__ = 'karl'
 
-
 import datetime
-from base_configure import base_settings
+
+from karloop.base_configure import base_settings
 
 
 class ParseStatic(object):
