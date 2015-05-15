@@ -84,6 +84,9 @@ class BaseApplication(object):
             conn.settimeout(5)
             try:
                 buffer_data = conn.recv(4096)
+                print "--------------------------------------"
+                print buffer_data
+                print "--------------------------------------"
                 response_data = self.parse_data(buffer_data=buffer_data)
                 conn.send(response_data)
             except socket.timeout:
