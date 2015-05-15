@@ -5,7 +5,7 @@ __author__ = 'karl'
 import datetime
 
 from karloop.Security import DES
-from KarlRender import Render
+from karloop.KarlRender import Render
 from karloop.base_configure import base_settings
 
 
