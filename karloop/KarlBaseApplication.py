@@ -9,6 +9,7 @@ import time
 import sys
 import datetime
 import platform
+import threading
 
 from base_configure import base_settings
 from karloop.KarlBaseRequest import BaseRequest
@@ -16,23 +17,6 @@ from karloop.KarlParseStatic import ParseStatic
 
 
 class BaseApplication(object):
-    # url mapping
-    handlers = {}
-
-    # template and static files settings
-    settings = {}
-
-    # http response headers
-    headers = "HTTP/1.1 %s %s\r\n" \
-              "Date: %s\r\n" \
-              "Host: %s\r\n" \
-              "Connection: keep-alive\r\n" \
-              "Content-Type: text/html;charset=UTF-8\r\n" \
-              "Set-Cookie: server=run;\r\n\r\n"
-
-    # static file name list
-    static_file_extension = ["jpeg", "jpg", "gif", "png", "css", "js", "mp3", "ogg", "mp4"]
-
     # init method
     def __init__(self, handlers=None, settings=None):
         if handlers:
@@ -46,7 +30,6 @@ class BaseApplication(object):
             base_settings["ip"] = self.ip
         else:
             self.__set_ip()
-        self.parse_static = ParseStatic(settings=settings)
 
     # set IP address
     def __set_ip(self):
@@ -82,20 +65,61 @@ class BaseApplication(object):
         print "run the server on:", self.ip, ":", self.port
         while True:
             conn, address = self.socket_server.accept()
-            conn.settimeout(5)
-            try:
-                buffer_data = conn.recv(4096)
-                response_data = self.parse_data(buffer_data=buffer_data)
-                data_size = sys.getsizeof(response_data)
-                conn.sendall(response_data)
-                lock_time = float(data_size)/(1024*256)
-                print "lock time:", lock_time
-                time.sleep(lock_time)
-            except socket.timeout:
-                print "time out"
-            print "close conn"
-            conn.close()
+            buffer_data = conn.recv(4096)
+            async_parse_data = AsyncParseData(conn, buffer_data, self.handlers, self.settings)
+            async_parse_data.run()
 
+
+class AsyncParseData(threading.Thread):
+    def __init__(self, connection, data, handlers, settings):
+        threading.Thread.__init__(self)
+        self.connection = connection
+        self.data = data
+        self.parse_data = ParseData(handlers=handlers, settings=settings)
+
+    def run(self):
+        response_data = self.parse_data.parse_data(buffer_data=self.data)
+        response_data_size = sys.getsizeof(response_data)
+        lock_time = response_data_size / (1024 * 256)
+        response_url = self.data.split("\r\n")[0].split(" ")[1]
+        if response_url.endswith(".mp3") or response_url.endswith(".ogg") or response_url.endswith(".mp4"):
+            self.connection.settimeout(None)
+        else:
+            self.connection.settimeout(lock_time + 5)
+        try:
+            self.connection.sendall(response_data)
+            time.sleep(lock_time)
+        except socket.timeout:
+            print "time out"
+        print "connection close"
+        self.connection.close()
+
+
+class ParseData(object):
+    # url mapping
+    handlers = {}
+
+    # template and static files settings
+    settings = {}
+
+    # http response headers
+    headers = "HTTP/1.1 %s %s\r\n" \
+              "Date: %s\r\n" \
+              "Host: %s\r\n" \
+              "Connection: keep-alive\r\n" \
+              "Content-Type: text/html;charset=UTF-8\r\n" \
+              "Set-Cookie: server=run;\r\n\r\n"
+
+    # static file name list
+    static_file_extension = ["jpeg", "jpg", "gif", "png", "css", "js", "mp3", "ogg", "mp4"]
+
+    # init method
+    def __init__(self, handlers, settings):
+        self.handlers = handlers
+        self.parse_static = ParseStatic(settings=settings)
+        self.settings = settings
+
+    # parse the data from client
     def parse_data(self, buffer_data):
         now = datetime.datetime.now()
         now_time = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
