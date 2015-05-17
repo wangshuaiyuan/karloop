@@ -10,10 +10,19 @@ import sys
 import datetime
 import platform
 import threading
+import functools
 
 from base_configure import base_settings
 from karloop.KarlBaseRequest import BaseRequest
 from karloop.KarlParseStatic import ParseStatic
+
+
+def async(function):
+    @functools.wraps(function)
+    def wrapper(*args, **kwargs):
+        new_thread = threading.Thread(target=function, args=args, kwargs=kwargs)
+        new_thread.start()
+    return wrapper
 
 
 class BaseApplication(object):
@@ -70,13 +79,13 @@ class BaseApplication(object):
             async_parse_data.run()
 
 
-class AsyncParseData(threading.Thread):
+class AsyncParseData(object):
     def __init__(self, connection, data, handlers, settings):
-        threading.Thread.__init__(self)
         self.connection = connection
         self.data = data
         self.parse_data = ParseData(handlers=handlers, settings=settings)
 
+    @async
     def run(self):
         response_data = self.parse_data.parse_data(buffer_data=self.data)
         response_data_size = sys.getsizeof(response_data)
