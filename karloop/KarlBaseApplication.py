@@ -81,7 +81,7 @@ class AsyncParseData(threading.Thread):
         response_data = self.parse_data.parse_data(buffer_data=self.data)
         response_data_size = sys.getsizeof(response_data)
         lock_time = response_data_size / (1024 * 256)
-        if len(self.data) > 1:
+        if len(self.data) > 4:
             response_url = self.data.split("\r\n")[0].split(" ")[1]
         else:
             response_url = ""
