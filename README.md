@@ -5,7 +5,8 @@ an python web framework like webpy
 download the package or check out the project  
 the cd to the project folder  
 run these commands:  
-sudo python setup.py install  
+
+    sudo python setup.py install  
 
 # demo
 ## hello world

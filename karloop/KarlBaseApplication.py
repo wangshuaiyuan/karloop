@@ -81,7 +81,10 @@ class AsyncParseData(threading.Thread):
         response_data = self.parse_data.parse_data(buffer_data=self.data)
         response_data_size = sys.getsizeof(response_data)
         lock_time = response_data_size / (1024 * 256)
-        response_url = self.data.split("\r\n")[0].split(" ")[1]
+        if len(self.data) > 1:
+            response_url = self.data.split("\r\n")[0].split(" ")[1]
+        else:
+            response_url = ""
         if response_url.endswith(".mp3") or response_url.endswith(".ogg") or response_url.endswith(".mp4"):
             self.connection.settimeout(None)
         else:
