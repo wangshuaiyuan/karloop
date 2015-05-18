@@ -41,6 +41,7 @@ class ParseStatic(object):
         data = f.read()
         f.close()
         file_extension = file_url.split(".")[-1]
+        file_extension = file_extension.lower()
         now = datetime.datetime.now()
         now_time = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
         content_type = self.content_type[file_extension] if (file_extension in self.content_type) else ""

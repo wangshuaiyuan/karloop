@@ -25,6 +25,11 @@ def async(function):
 
 
 class BaseApplication(object):
+
+    settings = {}
+
+    handlers = {}
+
     # init method
     def __init__(self, handlers=None, settings=None):
         if handlers:
@@ -123,7 +128,10 @@ class ParseData(object):
               "Set-Cookie: server=run;\r\n\r\n"
 
     # static file name list
-    static_file_extension = ["jpeg", "jpg", "gif", "png", "css", "js", "mp3", "ogg", "mp4"]
+    static_file_extension = [
+        "jpeg", "jpg", "gif", "png", "css", "js", "mp3", "ogg", "mp4",
+        "JPEG", "JPG", "GIF", "PNG", "CSS", "JS", "MP3", "OGG", "MP4"
+    ]
 
     # init method
     def __init__(self, handlers, settings):
