@@ -11,6 +11,7 @@ run these commands:
 # demo
 ## hello world
 
+    # coding=utf-8
     from karloop.KarlBaseApplication import BaseApplication  
     from karloop.KarlBaseResponse import BaseResponse  
   
@@ -21,7 +22,7 @@ run these commands:
           
     
     handlers = {
-        "hello": HelloHandler
+        "/hello": HelloHandler
     }
 
 
