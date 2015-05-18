@@ -101,8 +101,8 @@ class AsyncParseData(object):
         try:
             self.connection.sendall(response_data)
             time.sleep(lock_time)
-        except socket.timeout:
-            print "time out"
+        except Exception, e:
+            print e
         print "connection close"
         self.connection.close()
 
@@ -155,7 +155,8 @@ class ParseData(object):
         expression = "init_handler." + method + "()"
         try:
             result = eval(expression)
-        except Exception:
+        except Exception, e:
+            print e
             response = self.headers % (500, '"server error"', now_time, base_settings["host"])
             return response
         if result is None:
