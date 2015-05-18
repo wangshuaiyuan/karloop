@@ -33,7 +33,7 @@ class BaseApplication(object):
             self.settings = settings
         self.socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.port = base_settings["port"]
-        if "ip" in settings.keys():
+        if settings and ("ip" in settings.keys()):
             self.ip = settings["ip"]
             base_settings["ip"] = self.ip
         else:
