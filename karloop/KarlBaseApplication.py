@@ -4,7 +4,6 @@ __author__ = 'karl'
 
 import socket
 import struct
-import fcntl
 import time
 import sys
 import datetime
@@ -49,6 +48,7 @@ class BaseApplication(object):
             self.ip = socket.gethostbyname(name)
             base_settings["ip"] = self.ip
         elif platform_system.lower() == "linux":
+            import fcntl
             sock_f = self.socket_server.fileno()
             socket_io_address = 0x8915
             if_req = struct.pack('16sH14s', "eth0", socket.AF_INET, '\x00'*14)
