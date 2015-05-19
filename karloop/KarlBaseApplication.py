@@ -72,7 +72,7 @@ class BaseApplication(object):
             self.port = port
         base_settings["host"] = str(self.ip) + ":" + str(self.port)
         self.socket_server.bind((self.ip, self.port))
-        self.socket_server.listen(50)
+        self.socket_server.listen(9999)
 
     # run the server
     def run(self):
