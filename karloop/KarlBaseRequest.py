@@ -11,9 +11,17 @@ class BaseRequest(object):
         self.convert_data_list["method"] = data_list[0].split(" ")[0].lower()
         self.convert_data_list["url"] = data_list[0].split(" ")[1].split("?")[0]
         self.convert_data_list["http_version"] = data_list[0].split(" ")[2]
-        for cookie in data_list:
-            if "Cookie" in cookie:
-                self.convert_data_list["cookie"] = cookie.split("Cookie: ")[1]
+        for data in data_list:
+            if "Cookie" in data:
+                self.convert_data_list["cookie"] = data.split("Cookie: ")[1]
+            if "Range: bytes=" in data:
+                self.convert_data_list["content_range"] = data.replace("Range: bytes=", "").split("-")[0]
+
+    # get content range
+    def get_content_range(self):
+        if "content_range" in self.convert_data_list.keys():
+            return self.convert_data_list["content_range"]
+        return None
 
     # get request method
     def get_request_method(self):

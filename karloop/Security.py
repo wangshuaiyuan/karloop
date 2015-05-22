@@ -186,8 +186,8 @@ class DES(object):
   
 if __name__ == '__main__':  
     d = DES()  
-    d.input_key('123456789')  
-    s = "987654321"
+    d.input_key('123456789')
+    s = "/static/hello.js"
     a = d.encode(s)  
     print a
 

@@ -105,7 +105,7 @@ class AsyncParseData(object):
             self.connection.settimeout(lock_time + 5)
         try:
             self.connection.sendall(response_data)
-            time.sleep(lock_time)
+            # time.sleep(lock_time)
         except Exception, e:
             print e
         print "connection close"
@@ -151,7 +151,8 @@ class ParseData(object):
         url = request.get_request_url()
         extension_name = url.split(".")[-1]
         if extension_name in self.static_file_extension:
-            static_file_data = self.parse_static.parse_static(file_url=url)
+            media_range = request.get_content_range()
+            static_file_data = self.parse_static.parse_static(file_url=url, media_range=media_range)
             return static_file_data
         url_list = self.handlers.keys()
         data = request.get_http_data()
