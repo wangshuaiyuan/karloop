@@ -4,7 +4,6 @@ __author__ = 'karl'
 
 import socket
 import struct
-import time
 import sys
 import datetime
 import platform
@@ -105,7 +104,6 @@ class AsyncParseData(object):
             self.connection.settimeout(lock_time + 5)
         try:
             self.connection.sendall(response_data)
-            # time.sleep(lock_time)
         except Exception, e:
             print e
         print "connection close"
