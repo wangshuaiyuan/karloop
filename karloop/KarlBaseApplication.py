@@ -49,7 +49,7 @@ class BaseApplication(object):
         if platform_system.lower() == "windows":
             host_name = socket.gethostname()
             name = socket.getfqdn(host_name)
-            self.ip = socket.gethostbyname(name)
+            self.ip = socket.gethostbyname(name)[-1][-1]
             base_settings["ip"] = self.ip
         elif platform_system.lower() == "linux":
             import fcntl
@@ -62,7 +62,7 @@ class BaseApplication(object):
             base_settings["ip"] = self.ip
         else:
             host_name = socket.gethostname()
-            self.ip = socket.gethostbyname(host_name)
+            self.ip = socket.gethostbyname_ex(host_name)[-1][-1]
             base_settings["ip"] = self.ip
 
     # listen the port and set max request number
