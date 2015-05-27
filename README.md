@@ -39,3 +39,7 @@ run these commands:
 ### run hello world
     python index.py
 then open the web browser and go to "127.0.0.1:8888/hello", you will see the hello world.
+
+
+# Notice
+there are some bugs about stream video on windows operating system

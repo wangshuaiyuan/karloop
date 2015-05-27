@@ -49,7 +49,7 @@ class BaseApplication(object):
         if platform_system.lower() == "windows":
             host_name = socket.gethostname()
             name = socket.getfqdn(host_name)
-            self.ip = socket.gethostbyname(name)[-1][-1]
+            self.ip = socket.gethostbyname_ex(name)[-1][-1]
             base_settings["ip"] = self.ip
         elif platform_system.lower() == "linux":
             import fcntl
