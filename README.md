@@ -43,3 +43,4 @@ then open the web browser and go to "127.0.0.1:8888/hello", you will see the hel
 
 # Notice
 there are some bugs about stream video on windows operating system
+If you find some bugs or know how to fix the bugs please send message to karlvorndoenitz@gmail.com,special thanks.
